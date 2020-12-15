@@ -207,3 +207,41 @@ class Quoridor:
             if position not in list(graphe.successors(self.etat['joueurs'][joueur - 1]['pos'])):
                 raise QuoridorError("La position est invalide pour l'état actuel du jeu.")
             self.etat['joueurs'][joueur - 1]['pos'] = position
+
+        def état_partie(self):
+            '''Produire l'état actuel de la partie.(Dict)'''
+            return self.etat
+
+        def jouer_coup(self, joueur):
+            '''Jouer un coup automatique pour un joueur.'''
+            # -Exceptions- Game is already finished
+            if self.partie_terminée():
+                raise QuoridorError('La partie est déjà terminée.')
+
+            if joueur == 1:
+                player = (1, 'B1')
+                adv = (2, 'B2')
+            elif joueur == 2:
+                player = (2, 'B2')
+                adv = (1, 'B1')
+            # -Exceptions- Arg. joueur != 1 or 2
+            else:
+                raise QuoridorError('Le numéro du joueur est autre que 1 ou 2.')\
+
+            # Initialize graphe of possible paths
+            graphe = construire_graphe(
+                [j['pos'] for j in self.etat['joueurs']],
+                self.etat['murs']['horizontaux'],
+                self.etat['murs']['verticaux'])
+
+            playerpath = nx.shortest_path(graphe, self.etat['joueurs'][player[0] - 1]['pos'], player[1])
+            self.déplacer_jeton(player[0], playerpath[1])
+
+
+        def partie_terminée(self):
+        '''Déterminer si la partie est terminée.'''
+        if self.etat['joueurs'][0]['pos'][1] == 9:
+            return self.etat['joueurs'][0]['nom']
+        if self.etat['joueurs'][1]['pos'][1] == 1:
+            return self.etat['joueurs'][1]['nom']
+        return False

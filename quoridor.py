@@ -146,162 +146,269 @@ class Quoridor:
             or not nx.has_path(graphe, self.etat['joueurs'][1]['pos'], 'B2')):
             raise QuoridorError("La position d'un mur est invalide.")
 
-        def __str__(self):
-            '''Représentation en art ascii de l'état actuel de la partie.'''
-            # 1) Affichage de la légende
-            j1 = [self.etat['joueurs'][0]['nom'], self.etat['joueurs'][0]['murs']]
-            j2 = [self.etat['joueurs'][1]['nom'], self.etat['joueurs'][1]['murs']]
-            if len(j1[0]) >= len(j2[0]):
-                lenx = len(j1[0]) + 1
+    def __str__(self):
+        """Représentation en art ascii de l'état actuel de la partie.
+        Returns:
+            str: La chaîne de caractères de la représentation.
+        """
+    # 1) Affichage de la légende
+        j1 = [self.etat['joueurs'][0]['nom'], self.etat['joueurs'][0]['murs']]
+        j2 = [self.etat['joueurs'][1]['nom'], self.etat['joueurs'][1]['murs']]
+        if len(j1[0]) >= len(j2[0]):
+            lenx = len(j1[0]) + 1
+        else:
+            lenx = len(j2[0]) + 1
+        legende = f'Légende:\n   1={j1[0] + ",":<{lenx}} murs={j1[1] * "|"}\n'
+        legende += f'   2={j2[0] + ",":<{lenx}} murs={j2[1] * "|"}\n'
+        legende += f'   {"-" * 35}'
+    # 2) Affichage du damier initial vide:
+        forme1 = ''
+        for i in range(19, 2, -1):
+            if i % 2 == 0:
+                forme1 += f'  |{" " * 35}|\n'
             else:
-                lenx = len(j2[0]) + 1
-            legende = f'Légende:\n   1={j1[0] + ",":<{lenx}} murs={j1[1] * "|"}\n'
-            legende += f'   2={j2[0] + ",":<{lenx}} murs={j2[1] * "|"}\n'
-            legende += f'   {"-" * 35}'
-            # 2) Affichage du damier initial vide:
-            forme1 = ''
-            for i in range(19, 2, -1):
-                if i % 2 == 0:
-                    forme1 += f'  |{" " * 35}|\n'
-                else:
-                    forme1 += f'{i // 2} |{" .  " * 8} . |\n'
-            forme1 = list(forme1)
-            forme2 = ''
-            for j in range(2, 19):
-                if j==2:
-                    forme2 += f'--|{"-" * 35}\n  | '
-                if j % 2 == 0:
-                    forme2 += f'{j // 2}   '
-            # 3) Affichage des joueurs:
-            forme1[-80 * self.etat['joueurs'][0]['pos'][1] +
-            4 * self.etat['joueurs'][0]['pos'][0] + 40] = '1'
-            forme1[-80 * self.etat['joueurs'][1]['pos'][1] +
-            4 * self.etat['joueurs'][1]['pos'][0] + 40] = '2'
-            # 4) Affichage des murs:
-            for mur in self.etat['murs']['verticaux']:
-                for i in range(3):
-                    forme1[-80 * mur[1] + 4 * mur[0] + 38 - 40 * i] = '|'
-            for mur in self.etat['murs']['horizontaux']:
-                for i in range(7):
-                    forme1[-80 * mur[1] + 4 * mur[0] + 79 + i] = '-'
-            # 5) Affichage de tout:
-            return legende + '\n' + ''.join(forme1) + forme2
+                forme1 += f'{i // 2} |{" .  " * 8} . |\n'
+        forme1 = list(forme1)
+        forme2 = ''
+        for j in range(2, 19):
+            if j==2:
+                forme2 += f'--|{"-" * 35}\n  | '
+            if j % 2 == 0:
+                forme2 += f'{j // 2}   '
+    # 3) Affichage des joueurs:
+        forme1[-80 * self.etat['joueurs'][0]['pos'][1] +
+        4 * self.etat['joueurs'][0]['pos'][0] + 40] = '1'
+        forme1[-80 * self.etat['joueurs'][1]['pos'][1] +
+        4 * self.etat['joueurs'][1]['pos'][0] + 40] = '2'
+    # 4) Affichage des murs:
+        for mur in self.etat['murs']['verticaux']:
+            for i in range(3):
+                forme1[-80 * mur[1] + 4 * mur[0] + 38 - 40 * i] = '|'
+        for mur in self.etat['murs']['horizontaux']:
+            for i in range(7):
+                forme1[-80 * mur[1] + 4 * mur[0] + 79 + i] = '-'
+    # 5) Affichage de tout:
+        return legende + '\n' + ''.join(forme1) + forme2
 
-        def déplacer_jeton(self, joueur, position):
-            '''Pour le joueur spécifié, déplacer son jeton à la position spécifiée.'''
-            # -Exception- Arg. joueur != 1 ou 2
-            if joueur not in (1, 2):
-                raise QuoridorError('Le numéro du joueur est autre que 1 ou 2.')
-            # -Exception- Arg. position outside of grid
-            if not (1 <= position[0] <= 9 and 1 <= position[1] <= 9):
-                raise QuoridorError('La position est invalide (en dehors du damier).')
-            # Initialize graphe of possible moves
-            graphe = construire_graphe(
-                [j['pos'] for j in self.etat['joueurs']],
-                self.etat['murs']['horizontaux'],
-                self.etat['murs']['verticaux'])
+    def déplacer_jeton(self, joueur, position):
+        '''Pour le joueur spécifié, déplacer son jeton à la position spécifiée.'''
+        # -Exception- Arg. joueur != 1 ou 2
+        if joueur not in (1, 2):
+            raise QuoridorError('Le numéro du joueur est autre que 1 ou 2.')
+        # -Exception- Arg. position outside of grid
+        if not (1 <= position[0] <= 9 and 1 <= position[1] <= 9):
+            raise QuoridorError('La position est invalide (en dehors du damier).')
+        # Initialize graphe of possible moves
+        graphe = construire_graphe(
+            [j['pos'] for j in self.etat['joueurs']],
+            self.etat['murs']['horizontaux'],
+            self.etat['murs']['verticaux'])
         # -Exception- | Invalid move
-            if position not in list(graphe.successors(self.etat['joueurs'][joueur - 1]['pos'])):
-                raise QuoridorError("La position est invalide pour l'état actuel du jeu.")
-            self.etat['joueurs'][joueur - 1]['pos'] = position
+        if position not in list(graphe.successors(self.etat['joueurs'][joueur - 1]['pos'])):
+            raise QuoridorError("La position est invalide pour l'état actuel du jeu.")
+        self.etat['joueurs'][joueur - 1]['pos'] = position
 
-        def état_partie(self):
-            '''Produire l'état actuel de la partie.(Dict)'''
-            return self.etat
+    def état_partie(self):
+        '''Produire l'état actuel de la partie.(Dict)'''
+        return self.etat
 
-        def jouer_coup(self, joueur):
-            '''Jouer un coup automatique pour un joueur.'''
-            # -Exceptions- Game is already finished
-            if self.partie_terminée():
-                raise QuoridorError('La partie est déjà terminée.')
+    def jouer_coup(self, joueur):
+        """Jouer un coup automatique pour un joueur.
+        Pour le joueur spécifié, jouer automatiquement son meilleur coup pour l'état actuel
+        de la partie. Ce coup est soit le déplacement de son jeton, soit le placement d'un
+        mur horizontal ou vertical.
+        Args:
+            joueur (int): Un entier spécifiant le numéro du joueur (1 ou 2).
+        Raises:
+            QuoridorError: Le numéro du joueur est autre que 1 ou 2.
+            QuoridorError: La partie est déjà terminée.
+        Returns:
+            Tuple[str, Tuple[int, int]]: Un tuple composé du type et de la position du coup joué.
 
-            if joueur == 1:
-                player = (1, 'B1')
-                adv = (2, 'B2')
-            elif joueur == 2:
-                player = (2, 'B2')
-                adv = (1, 'B1')
-            # -Exceptions- Arg. joueur != 1 or 2
-            else:
-                raise QuoridorError('Le numéro du joueur est autre que 1 ou 2.')\
-
-            # Initialize graphe of possible paths
-            graphe = construire_graphe(
-                [j['pos'] for j in self.etat['joueurs']],
-                self.etat['murs']['horizontaux'],
-                self.etat['murs']['verticaux'])
-
-            playerpath = nx.shortest_path(graphe,
-            self.etat['joueurs'][player[0] - 1]['pos'],
-            player[1])
+        # If player already has shortest path, move forward
+        if len(playerpath) <= len(advpath):
             self.déplacer_jeton(player[0], playerpath[1])
+            type_coup = 'D'
+            coup = (player[0], playerpath[1])
+        # If adversary has shortest path, try to block with wall
+        # If adv moving south, block with horizontal wall
+        # If can't place wall after 2 tries, move player
+        elif advpos[1] - advpath[1][1] == 1:
+            try:
+                self.placer_mur(player[0], (advpos[0], advpos[1] + 1), 'horizontal')
+                type_coup = 'MH'
+                coup = (advpos[0], advpos[1] + 1)
+            except QuoridorError:
+                try:
+                    self.placer_mur(player[0], (advpos[0] - 1, advpos[1] + 1), 'horizontal')
+                    type_coup = 'MH'
+                    coup = (advpos[0] - 1, advpos[1] + 1)
+                except QuoridorError:
+                    self.déplacer_jeton(player[0], playerpath[1])
+                    type_coup = 'D'
+                    coup = (player[0], playerpath[1])
+        # If adv moving north, block with horizontal wall
+        elif advpos[1] - advpath[1][1] == -1:
+            try:
+                self.placer_mur(player[0], (advpos[0], advpos[1]), 'horizontal')
+                type_coup = 'MH'
+                coup = (advpos[0], advpos[1])
+            except QuoridorError:
+                try:
+                    self.placer_mur(player[0], (advpos[0] - 1, advpos[1]), 'horizontal')
+                    type_coup = 'MH'
+                    coup = (advpos[0] - 1, advpos[1])
+                except QuoridorError:
+                    self.déplacer_jeton(player[0], playerpath[1])
+                    type_coup = 'D'
+                    coup = (player[0], playerpath[1])
+        # If adv moving left, block with vertical wall
+        elif advpos[0] - advpath[1][0] == 1:
+            try:
+                self.placer_mur(player[0], (advpos[0], advpos[1] - 1), 'vertical')
+                type_coup = 'MV'
+                coup = (advpos[0], advpos[1] - 1)
+            except QuoridorError:
+                try:
+                    self.placer_mur(player[0], (advpos[0], advpos[1]), 'vertical')
+                    type_coup = 'MV'
+                    coup = (advpos[0], advpos[1])
+                except QuoridorError:
+                    self.déplacer_jeton(player[0], playerpath[1])
+                    type_coup = 'D'
+                    coup = (player[0], playerpath[1])
+        # If adv moving right, block with vertical wall
+        elif advpos[0] - advpath[1][0] == -1:
+            try:
+                self.placer_mur(player[0], (advpos[0] + 1, advpos[1] - 1), 'vertical')
+                type_coup = 'MV'
+                coup = (advpos[0] + 1, advpos[1] - 1)
+            except QuoridorError:
+                try:
+                    self.placer_mur(player[0], (advpos[0] + 1, advpos[1]), 'vertical')
+                    type_coup = 'MV'
+                    coup = (advpos[0] + 1, advpos[1])
+                except QuoridorError:
+                    self.déplacer_jeton(player[0], playerpath[1])
+                    type_coup = 'D'
+                    coup = (player[0], playerpath[1])
+        return (type_coup, coup)
+        )
+        advpath = nx.shortest_path(graphe, self.etat['joueurs'][adv[0] - 1]['pos'], adv[1])
+        advpos = self.etat['joueurs'][adv[0] - 1]['pos']
+        """
+        # -Exceptions-
+        if self.partie_terminée():
+            raise QuoridorError('La partie est déjà terminée.')
+
+        if joueur == 1:
+            player = (1, 'B1')
+            # adv = (2, 'B2')
+        elif joueur == 2:
+            player = (2, 'B2')
+            # adv = (1, 'B1')
+        else:
+            raise QuoridorError('Le numéro du joueur est autre que 1 ou 2.')
+
+        graphe = construire_graphe(
+            [j['pos'] for j in self.etat['joueurs']],
+            self.etat['murs']['horizontaux'],
+            self.etat['murs']['verticaux'])
+
+        playerpath = nx.shortest_path(graphe, self.etat['joueurs'][player[0] - 1]['pos'], player[1])
+        self.déplacer_jeton(player[0], playerpath[1])
+        return ['D', playerpath[1]]
+
+    def partie_terminée(self):
+        """Déterminer si la partie est terminée.
+        Returns:
+            str/bool: Le nom du gagnant si la partie est terminée; False autrement.
+        """
+        if self.etat['joueurs'][0]['pos'][1] == 9:
+            return self.etat['joueurs'][0]['nom']
+        if self.etat['joueurs'][1]['pos'][1] == 1:
+            return self.etat['joueurs'][1]['nom']
+        return False
 
 
-        def partie_terminée(self):
-            '''Déterminer si la partie est terminée.'''
-            if self.etat['joueurs'][0]['pos'][1] == 9:
-                return self.etat['joueurs'][0]['nom']
-            if self.etat['joueurs'][1]['pos'][1] == 1:
-                return self.etat['joueurs'][1]['nom']
-            return False
+    def placer_mur(self, joueur, position, orientation):
+        """Placer un mur.
+        Pour le joueur spécifié, placer un mur à la position spécifiée.
+        Args:
+            joueur (int): le numéro du joueur (1 ou 2).
+            position (Tuple[int, int]): le tuple (x, y) de la position du mur.
+            orientation (str): l'orientation du mur ('horizontal' ou 'vertical').
+        Raises:
+            QuoridorError: Le numéro du joueur est autre que 1 ou 2.
+            QuoridorError: Un mur occupe déjà cette position.
+            QuoridorError: La position est invalide pour cette orientation.
+            QuoridorError: Le joueur a déjà placé tous ses murs.
+        """
+        # -Exception- | Joueur != 1 or 2
+        if joueur not in [1,2]:
+            raise QuoridorError('Le numéro du joueur est autre que 1 ou 2.')
+        # -Exception- | Joueur walls = 0
+        if self.etat['joueurs'][joueur - 1]['murs'] == 0:
+            raise QuoridorError('Le joueur a déjà placé tous ses murs.')
+
+        horizontal_walls = self.etat['murs']['horizontaux']
+        if orientation == 'horizontal':
+            # -Exception- | Position outside grid | horizontal
+            if not (1 <= position[0] <= 8 and 2 <= position[1] <= 9):
+                raise QuoridorError('La position est invalide pour cette orientation.')
+            # Error - Same wall position repeated, horizontal
+            if (self.etat['murs']['horizontaux'].count(tuple(position)) +
+            self.etat['murs']['horizontaux'].count(list(position))) != 0:
+                raise QuoridorError('Un mur occupe déjà cette position.')
+            # Error - Two walls in a row, horizontal
+            if (((position[0] + 1, position[1]) in self.etat['murs']['horizontaux']) or
+                ([position[0] + 1, position[1]] in self.etat['murs']['horizontaux']) or
+                ((position[0] - 1, position[1]) in self.etat['murs']['horizontaux']) or
+                ((position[0] - 1, position[1]) in self.etat['murs']['horizontaux'])):
+                raise QuoridorError('Un mur occupe déjà cette position.')
+            # Error - Crossed walls
+            if (((position[0] + 1, position[1] - 1) in self.etat['murs']['verticaux']) or
+                ([position[0] + 1, position[1] - 1] in self.etat['murs']['verticaux'])):
+                raise QuoridorError('La position est invalide pour cette orientation.')
+            horizontal_walls.append(position)
+
+        vertical_walls = self.etat['murs']['verticaux']
+        if orientation == 'vertical':
+            # -Exception- | Position outside grid | vertical
+            if not (2 <= position[0] <=9 and 1 <= position[1] <= 8):
+                raise QuoridorError('La position est invalide pour cette orientation.')
+            # Error - Same wall position repeated, horizontal
+            if (self.etat['murs']['verticaux'].count(tuple(position)) +
+            self.etat['murs']['verticaux'].count(list(position))) != 0:
+                raise QuoridorError('Un mur occupe déjà cette position.')
+            # Error - Two walls in a row, vertical
+            if (((position[0], position[1] + 1) in self.etat['murs']['verticaux']) or
+                ((position[0], position[1] + 1) in self.etat['murs']['verticaux']) or
+                ((position[0], position[1] - 1) in self.etat['murs']['verticaux']) or
+                ([position[0], position[1] - 1] in self.etat['murs']['verticaux'])):
+                raise QuoridorError('Un mur occupe déjà cette position.')
+            # Error - Crossed walls
+            if (((position[0] - 1, position[1] + 1) in self.etat['murs']['horizontaux']) or
+                ([position[0] - 1, position[1] + 1] in self.etat['murs']['horizontaux'])):
+                raise QuoridorError('La position est invalide pour cette orientation.')
+            vertical_walls.append(position)
+        graphe = construire_graphe(
+            [j['pos'] for j in self.etat['joueurs']],
+            horizontal_walls,
+            vertical_walls)
+        # -Exception- | Wall would block player paths
+        if (not nx.has_path(graphe, self.etat['joueurs'][0]['pos'], 'B1')
+            or not nx.has_path(graphe, self.etat['joueurs'][1]['pos'], 'B2')):
+            raise QuoridorError("La position d'un mur est invalide.")
+        # Remove 1 player wall, add new wall to 'murs'
+        self.etat['joueurs'][joueur - 1]['murs'] -= 1
 
 
-        def placer_mur(self, joueur, position, orientation):
-            '''Pour le joueur spécifié, placer un mur à la position spécifiée.'''
-            # -Exception- Arg. joueur != 1 or 2
-            if joueur not in [1,2]:
-                raise QuoridorError('Le numéro du joueur est autre que 1 ou 2.')
-            # -Exception- Number of walls left = 0
-            if self.etat['joueurs'][joueur - 1]['murs'] == 0:
-                raise QuoridorError('Le joueur a déjà placé tous ses murs.')
-
-            horizontal_walls = self.etat['murs']['horizontaux']
-            if orientation == 'horizontal':
-                # -Exception- | Position outside grid | horizontal
-                if not (1 <= position[0] <= 8 and 2 <= position[1] <= 9):
-                    raise QuoridorError('La position est invalide pour cette orientation.')
-                # Error - Same wall position repeated, horizontal
-                if (self.etat['murs']['horizontaux'].count(tuple(position)) +
-                self.etat['murs']['horizontaux'].count(list(position))) != 0:
-                    raise QuoridorError('Un mur occupe déjà cette position.')
-                # Error - Two walls in a row, horizontal
-                if (((position[0] + 1, position[1]) in self.etat['murs']['horizontaux']) or
-                    ([position[0] + 1, position[1]] in self.etat['murs']['horizontaux']) or
-                    ((position[0] - 1, position[1]) in self.etat['murs']['horizontaux']) or
-                    ((position[0] - 1, position[1]) in self.etat['murs']['horizontaux'])):
-                    raise QuoridorError('Un mur occupe déjà cette position.')
-                # Error - Crossed walls
-                if (((position[0] + 1, position[1] - 1) in self.etat['murs']['verticaux']) or
-                    ([position[0] + 1, position[1] - 1] in self.etat['murs']['verticaux'])):
-                    raise QuoridorError('La position est invalide pour cette orientation.')
-                horizontal_walls.append(position)
-
-            vertical_walls = self.etat['murs']['verticaux']
-            if orientation == 'vertical':
-                # -Exception- | Position outside grid | vertical
-                if not (2 <= position[0] <=9 and 1 <= position[1] <= 8):
-                    raise QuoridorError('La position est invalide pour cette orientation.')
-                # Error - Same wall position repeated, horizontal
-                if (self.etat['murs']['verticaux'].count(tuple(position)) +
-                self.etat['murs']['verticaux'].count(list(position))) != 0:
-                    raise QuoridorError('Un mur occupe déjà cette position.')
-                # Error - Two walls in a row, vertical
-                if (((position[0], position[1] + 1) in self.etat['murs']['verticaux']) or
-                    ((position[0], position[1] + 1) in self.etat['murs']['verticaux']) or
-                    ((position[0], position[1] - 1) in self.etat['murs']['verticaux']) or
-                    ([position[0], position[1] - 1] in self.etat['murs']['verticaux'])):
-                    raise QuoridorError('Un mur occupe déjà cette position.')
-                # Error - Crossed walls
-                if (((position[0] - 1, position[1] + 1) in self.etat['murs']['horizontaux']) or
-                    ([position[0] - 1, position[1] + 1] in self.etat['murs']['horizontaux'])):
-                    raise QuoridorError('La position est invalide pour cette orientation.')
-                vertical_walls.append(position)
-
-            graphe = construire_graphe(
-                [j['pos'] for j in self.etat['joueurs']],
-                horizontal_walls, vertical_walls)
-            if (not nx.has_path(graphe, self.etat['joueurs'][0]['pos'], 'B1')
-                or not nx.has_path(graphe, self.etat['joueurs'][1]['pos'], 'B2')):
-                raise QuoridorError("La position d'un mur est invalide.")
-            # Remove 1 player wall, add new wall to 'murs'
-            self.etat['joueurs'][joueur - 1]['murs'] -= 1
+        graphe = construire_graphe(
+            [j['pos'] for j in self.etat['joueurs']],
+            horizontal_walls, vertical_walls)
+        if (not nx.has_path(graphe, self.etat['joueurs'][0]['pos'], 'B1')
+            or not nx.has_path(graphe, self.etat['joueurs'][1]['pos'], 'B2')):
+            raise QuoridorError("La position d'un mur est invalide.")
+        # Remove 1 player wall, add new wall to 'murs'
+        self.etat['joueurs'][joueur - 1]['murs'] -= 1

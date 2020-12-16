@@ -37,7 +37,11 @@ if __name__ == "__main__":
         # Mode auto simple
         game = Quoridor(game_info[1]['joueurs'])
         while not game.partie_terminée():
-            pass
+            print(game)
+            coup = game.jouer_coup(1)
+            etat = jouer_coup(game_info[0], coup[0], tuple(coup[1]))[1]
+            game = QuoridorX(etat['joueurs'], murs=etat['murs'])
+
 
 
     elif parsed.graphique:
@@ -60,33 +64,33 @@ if __name__ == "__main__":
             if type_coup == 'D':
                 try:
                     game.déplacer_jeton(1, (int(col), int(row)))
-                except QuoridorError as e:
-                    print(e)
+                except QuoridorError as err:
+                    print(err)
                     continue
-                except StopIteration as s:
-                    print(f'Game Over! The winner is {s}')
+                except StopIteration as stop:
+                    print(f'Game Over! The winner is {stop}')
                 else:
                     etat = jouer_coup(game_info[0], 'D', (col, row))[1]
                     game = Quoridor(etat['joueurs'], murs=etat['murs'])
             elif type_coup == 'MH':
                 try:
                     game.placer_mur(1, (int(col), int(row)), 'horizontal')
-                except QuoridorError as e:
-                    print(e)
+                except QuoridorError as err:
+                    print(err)
                     continue
-                except StopIteration as s:
-                    print(f'Game Over! The winner is {s}')
+                except StopIteration as stop:
+                    print(f'Game Over! The winner is {stop}')
                 else:
                     etat = jouer_coup(game_info[0], 'MH', (col, row))[1]
                     game = Quoridor(etat['joueurs'], murs=etat['murs'])
             elif type_coup == 'MV':
                 try:
                     game.placer_mur(1, (int(col), int(row)), 'vertical')
-                except QuoridorError as e:
-                    print(e)
+                except QuoridorError as err:
+                    print(err)
                     continue
-                except StopIteration as s:
-                    print(f'Game Over! The winner is {s}')
+                except StopIteration as stop:
+                    print(f'Game Over! The winner is {stop}')
                 else:
                     etat = jouer_coup(game_info[0], 'MV', (col, row))[1]
                     game = Quoridor(etat['joueurs'], murs=etat['murs'])

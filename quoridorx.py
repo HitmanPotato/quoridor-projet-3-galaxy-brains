@@ -7,7 +7,7 @@ class QuoridorX(Quoridor):
     '''class docstring'''
     def __init__(self, joueurs, murs=None):
         #TODO: création d'une fenêtre graphique et l'affichage d'un damier avec les deux jetons dans leur position initiale
-        super().__init__(self)
+        super().__init__(joueurs, murs)
         self.afficher()
 
     def afficher(self):

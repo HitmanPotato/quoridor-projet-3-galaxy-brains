@@ -36,11 +36,13 @@ if __name__ == "__main__":
     elif parsed.automatique:
         # Mode auto simple
         game = Quoridor(game_info[1]['joueurs'])
+        print(game)
         while not game.partie_terminée():
-            print(game)
             coup = game.jouer_coup(1)
+            print(game)
             etat = jouer_coup(game_info[0], coup[0], tuple(coup[1]))[1]
             game = QuoridorX(etat['joueurs'], murs=etat['murs'])
+            print(game)
 
 
 

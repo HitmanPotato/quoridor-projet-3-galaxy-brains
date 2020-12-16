@@ -29,8 +29,13 @@ if __name__ == "__main__":
     if parsed.automatique and parsed.graphique:
         # Mode auto graphique
         game = QuoridorX(game_info[1]['joueurs'])
+        print(game)
         while not game.partie_terminée():
-            pass
+            coup = game.jouer_coup(1)
+            print(game)
+            etat = jouer_coup(game_info[0], coup[0], tuple(coup[1]))[1]
+            game = QuoridorX(etat['joueurs'], murs=etat['murs'])
+            print(game)
 
 
     elif parsed.automatique:
@@ -41,7 +46,7 @@ if __name__ == "__main__":
             coup = game.jouer_coup(1)
             print(game)
             etat = jouer_coup(game_info[0], coup[0], tuple(coup[1]))[1]
-            game = QuoridorX(etat['joueurs'], murs=etat['murs'])
+            game = Quoridor(etat['joueurs'], murs=etat['murs'])
             print(game)
 
 
@@ -51,6 +56,8 @@ if __name__ == "__main__":
         game = QuoridorX(game_info[1]['joueurs'])
         while not game.partie_terminée():
             pass
+
+
 
 
     else:

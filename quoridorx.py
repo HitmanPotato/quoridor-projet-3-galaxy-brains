@@ -12,103 +12,89 @@ class QuoridorX(Quoridor):
 
     def afficher(self):
         '''method docstring'''
-        window = turtle.Screen()
-        window.title('Quoridor')
-        window.setup(width=800, height=600)
+        # Screen setup
+        win = turtle.Screen()
+        win.title('Quoridor Game')
+        win.bgcolor('lightgreen')
+        win.setup(width=800, height=600)
+        win.tracer(0)
+
+        # Background grid
         grid = turtle.Turtle()
-        grid.speed('fastest')
-        grid.pensize(1)
-        grid.pencolor('black')
-
-
-        def square(side_length):
-            '''function docstring'''
-            for i in range(4):
-                dot = (side_length / 12)
-                for j in range(4):
-                    grid.forward(dot)
-                    grid.penup()
-                    grid.forward(dot)
-                    grid.pendown()
-                    grid.forward(dot)
-                grid.left(90)
-
-        def row(col_size, side_length):
-            '''function docstring'''
-            for i in range(col_size):
-                square(side_length)
-                grid.penup()
-                grid.forward(side_length)
-                grid.pendown()
-            grid.penup()
-            grid.left(180)
-            grid.forward(col_size * side_length)
-            grid.left(180)
-            grid.pendown()
-
-        def row_of_rows(row_size, col_size, side_length):
-            '''function docstring'''
-            for i in range(2):
-                grid.forward(side_length * col_size)
-                grid.left(90)
-                grid.forward(side_length * row_size)
-                grid.left(90)
-            for i in range(row_size):
-                row(col_size, side_length)
-                grid.penup()
-                grid.left(90)
-                grid.forward(side_length)
-                grid.right(90)
-                grid.pendown()
-            grid.hideturtle()
-            grid.penup()
-            grid.right(90)
-            grid.forward(row_size * side_length)
-            grid.left(90)
-            grid.pendown()
-        
-        # Positioning player 1
-        player1 = turtle.Turtle()
-        window.tracer(False)
-        player1.penup()
-        player1.setx((self.etat['joueurs'][0]['pos'][0] - 5) * 30)
-        player1.sety((self.etat['joueurs'][0]['pos'][1] - 5) * 30)
-        player1.pendown()
-        window.tracer(True)
-        player1.dot(10, 'blue')
-        player1.hideturtle()
-        
-        # Positioning player 2
-        player2 = turtle.Turtle()
-        window.tracer(False)
-        player2.penup()
-        player2.setx((self.etat['joueurs'][1]['pos'][0] - 5) * 30)
-        player2.sety((self.etat['joueurs'][1]['pos'][1] - 5) * 30)
-        player2.pendown()
-        window.tracer(True)
-        player2.dot(10, 'red')
-        player2.hideturtle()
-
-        
+        side_length = 30
         # Centering the grid
         grid.penup()
-        grid.backward(135)
+        grid.backward(side_length * 9 / 2)
         grid.left(90)
-        grid.backward(135)
+        grid.backward(side_length * 9 / 2)
         grid.right(90)
         grid.pendown()
+        # Draw full exterior lines
+        for i in range(4):
+            grid.forward(side_length * 9)
+            grid.left(90)
+        # Legend information
+        pen = turtle.Turtle()
+        pen.speed(0)
+        pen.shape('square')
+        pen.color('black')
+        pen.penup()
+        pen.hideturtle()
+        pen.goto(-(side_length*9/2), (side_length*9/2) + 15)
+        pen.write('Hello i am pen')
+        # Drawing dotted grid
+        def draw_square():
+            for i in range(4):
+                for j in range(4):
+                    grid.forward(side_length / 12)
+                    grid.penup()
+                    grid.forward(side_length / 12)
+                    grid.pendown()
+                    grid.forward(side_length / 12)
+                grid.left(90)
 
-        # Drawing the grid
+        for j in range(9):
+            for i in range(9):
+                draw_square()
+                grid.penup()
+                grid.forward(side_length)
+                grid.pendown()
+            grid.penup()
+            grid.backward(9 * side_length)
+            grid.left(90)
+            grid.forward(side_length)
+            grid.right(90)
         grid.hideturtle()
-        window.tracer(False)
-        row_of_rows(9, 9, 30)
-        window.tracer(True)
-        grid.hideturtle()
-        window.mainloop()
+        
+        # Positioning player 1
+        p1 = turtle.Turtle()
+        p1.speed(0)
+        p1.shape('circle')
+        p1.color('blue')
+        p1.penup()
+        p1.setx((self.etat['joueurs'][0]['pos'][0] - 5) * 30)
+        p1.sety((self.etat['joueurs'][0]['pos'][1] - 5) * 30)
+        p1.pendown()
+        win.tracer(True)
+        p1.showturtle()
+        win.tracer(False)
+        
+        # Positioning player 2
+        p2 = turtle.Turtle()
+        p2.speed(0)
+        p2.shape('circle')
+        p2.color('red')
+        p2.penup()
+        p2.setx((self.etat['joueurs'][1]['pos'][0] - 5) * 30)
+        p2.sety((self.etat['joueurs'][1]['pos'][1] - 5) * 30)
+        p2.pendown()
+        win.tracer(True)
+        p2.showturtle()
+        win.tracer(False)
 
-        # Placing the players
+        win.mainloop()
+        win.update()
+        turtle.exitonclick()
 
 if __name__ == '__main__':
     game = QuoridorX(['player', 'robot'])
-    game.déplacer_jeton(1, (5, 2))
-    game.afficher()

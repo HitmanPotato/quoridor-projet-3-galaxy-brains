@@ -55,7 +55,42 @@ if __name__ == "__main__":
         # Mode manuel graphique
         game = QuoridorX(game_info[1]['joueurs'])
         while not game.partie_terminée():
-            pass
+            type_coup = turtle.textinput('Choisissez votre type de coup', '[D]  [MH]  [MV]')
+            col = turtle.textinput('Définissez la colonne de votre coup', 'Choisissez un numéro de colonne')
+            row = turtle.textinput('Définissez la ligne de votre coup', 'Choisissez un numéro de ligne')
+            if type_coup == 'D':
+                try:
+                    game.déplacer_jeton(1, (int(col), int(row)))
+                except QuoridorError as err:
+                    turtle.write(err)
+                    continue
+                except StopIteration as stop:
+                    turtle.write(f'Game Over! The winner is {stop}')
+                else:
+                    etat = jouer_coup(game_info[0], 'D', (col, row))[1]
+                    game = QuoridorX(etat['joueurs'], murs=etat['murs'])
+            elif type_coup == 'MH':
+                try:
+                    game.placer_mur(1, (int(col), int(row)), 'horizontal')
+                except QuoridorError as err:
+                    print(err)
+                    continue
+                except StopIteration as stop:
+                    print(f'Game Over! The winner is {stop}')
+                else:
+                    etat = jouer_coup(game_info[0], 'MH', (col, row))[1]
+                    game = QuoridorX(etat['joueurs'], murs=etat['murs'])
+            elif type_coup == 'MV':
+                try:
+                    game.placer_mur(1, (int(col), int(row)), 'vertical')
+                except QuoridorError as err:
+                    print(err)
+                    continue
+                except StopIteration as stop:
+                    print(f'Game Over! The winner is {stop}')
+                else:
+                    etat = jouer_coup(game_info[0], 'MV', (col, row))[1]
+                    game = QuoridorX(etat['joueurs'], murs=etat['murs'])
 
 
 

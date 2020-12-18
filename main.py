@@ -48,7 +48,7 @@ if __name__ == "__main__":
                     game.placer_mur(2, wallpos, 'vertical')
                 game.afficher()
         except StopIteration as stop:
-            turtle.textinput('Game Over!' f'The winner is {stop}!')
+            turtle.textinput('Game Over!', f'The winner is {stop}!')
 
 
 

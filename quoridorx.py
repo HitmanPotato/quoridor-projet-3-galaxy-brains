@@ -160,6 +160,7 @@ class QuoridorX(Quoridor):
 
         # Legend information
         pen = turtle.Turtle()
+        pen.clear()
         pen.speed(0)
         pen.shape('square')
         pen.color('black')

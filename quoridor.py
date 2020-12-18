@@ -326,7 +326,7 @@ class Quoridor:
             if not nx.has_path(graphe, self.etat['joueurs'][1]['pos'], 'B1'):
                 horizontal_walls.pop()
                 raise QuoridorError("La position d'un mur est invalide.")
-        
+
         if orientation == 'vertical':
             # -Exception- | Position outside grid | vertical
             if not (2 <= position[0] <=9 and 1 <= position[1] <= 8):

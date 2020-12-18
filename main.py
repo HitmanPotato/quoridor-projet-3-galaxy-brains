@@ -1,7 +1,7 @@
 '''module docstring'''
 import turtle
 import argparse
-from api import lister_parties, initialiser_partie, jouer_coup
+from api import initialiser_partie, jouer_coup
 from quoridor import Quoridor
 from quoridor import QuoridorError
 from quoridorx import QuoridorX
@@ -39,11 +39,13 @@ if __name__ == "__main__":
                     newpos = tuple(etat['joueurs'][1]['pos'])
                     game.déplacer_jeton(2, newpos)
                 # Type coup robot | Mur horizontal
-                elif  len(game.état_partie()['murs']['horizontaux']) != len(etat['murs']['horizontaux']):
+                elif  (len(game.état_partie()['murs']['horizontaux']) !=
+                    len(etat['murs']['horizontaux'])):
                     wallpos = tuple(etat['murs']['horizontaux'][-1])
                     game.placer_mur(2, wallpos, 'horizontal')
                 # Type coup robot | Mur vertical
-                elif  len(game.état_partie()['murs']['verticaux']) != len(etat['murs']['verticaux']):
+                elif  (len(game.état_partie()['murs']['verticaux']) !=
+                    len(etat['murs']['verticaux'])):
                     wallpos = tuple(etat['murs']['verticaux'][-1])
                     game.placer_mur(2, wallpos, 'vertical')
                 game.afficher()
@@ -66,11 +68,13 @@ if __name__ == "__main__":
                     newpos = tuple(etat['joueurs'][1]['pos'])
                     game.déplacer_jeton(2, newpos)
                 # Type coup robot | Mur horizontal
-                elif  len(game.état_partie()['murs']['horizontaux']) != len(etat['murs']['horizontaux']):
+                elif  (len(game.état_partie()['murs']['horizontaux']) !=
+                    len(etat['murs']['horizontaux'])):
                     wallpos = tuple(etat['murs']['horizontaux'][-1])
                     game.placer_mur(2, wallpos, 'horizontal')
                 # Type coup robot | Mur vertical
-                elif  len(game.état_partie()['murs']['verticaux']) != len(etat['murs']['verticaux']):
+                elif  (len(game.état_partie()['murs']['verticaux']) !=
+                    len(etat['murs']['verticaux'])):
                     wallpos = tuple(etat['murs']['verticaux'][-1])
                     game.placer_mur(2, wallpos, 'vertical')
                 print(game)
@@ -86,8 +90,10 @@ if __name__ == "__main__":
             game.afficher()
             game.afficher()
             type_coup = turtle.textinput("Choisissez votre type de coup", 'D, MH, ou MV')
-            col = int(turtle.numinput('Définissez la colonne de votre coup', 'Numéro de colonne:', minval=1, maxval=9))
-            row = int(turtle.numinput('Définissez la ligne de votre coup', 'Numéro de ligne:', minval=1, maxval=9))
+            col = int(turtle.numinput('Définissez la colonne de votre coup',
+                'Numéro de colonne:', minval=1, maxval=9))
+            row = int(turtle.numinput('Définissez la ligne de votre coup',
+                'Numéro de ligne:', minval=1, maxval=9))
             # Type coup joueur | Deplacement
             if type_coup.upper() == 'D':
                 try:
@@ -102,17 +108,20 @@ if __name__ == "__main__":
                     game.afficher()
                     etat = jouer_coup(game_info[0], 'D', (int(col), int(row)))[1]
                     # Type coup robot | Deplacement
-                    if game.état_partie()['joueurs'][1]['pos'] != tuple(etat['joueurs'][1]['pos']):
+                    if (game.état_partie()['joueurs'][1]['pos'] !=
+                        tuple(etat['joueurs'][1]['pos'])):
                         newpos = tuple(etat['joueurs'][1]['pos'])
                         game.déplacer_jeton(2, newpos)
                         game.afficher()
                     # Type coup robot | Mur horizontal
-                    elif  len(game.état_partie()['murs']['horizontaux']) != len(etat['murs']['horizontaux']):
+                    elif  (len(game.état_partie()['murs']['horizontaux']) !=
+                        len(etat['murs']['horizontaux'])):
                         hwallpos = tuple(etat['murs']['horizontaux'][-1])
                         game.placer_mur(2, hwallpos, 'horizontal')
                         game.afficher()
                     # Type coup robot | Mur vertical
-                    elif  len(game.état_partie()['murs']['verticaux']) != len(etat['murs']['verticaux']):
+                    elif  (len(game.état_partie()['murs']['verticaux']) !=
+                        len(etat['murs']['verticaux'])):
                         vwallpos = tuple(etat['murs']['verticaux'][-1])
                         game.placer_mur(2, vwallpos, 'vertical')
                         game.afficher()
@@ -129,17 +138,20 @@ if __name__ == "__main__":
                     game.afficher()
                     etat = jouer_coup(game_info[0], 'MH', (col, row))[1]
                     # Type coup robot | Deplacement
-                    if game.état_partie()['joueurs'][1]['pos'] != tuple(etat['joueurs'][1]['pos']):
+                    if (game.état_partie()['joueurs'][1]['pos'] !=
+                        tuple(etat['joueurs'][1]['pos'])):
                         newpos = tuple(etat['joueurs'][1]['pos'])
                         game.déplacer_jeton(2, newpos)
                         game.afficher()
                     # Type coup robot | Mur horizontal
-                    elif  len(game.état_partie()['murs']['horizontaux']) != len(etat['murs']['horizontaux']):
+                    elif  (len(game.état_partie()['murs']['horizontaux']) !=
+                        len(etat['murs']['horizontaux'])):
                         hwallpos = tuple(etat['murs']['horizontaux'][-1])
                         game.placer_mur(2, hwallpos, 'horizontal')
                         game.afficher()
                     # Type coup robot | Mur vertical
-                    elif  len(game.état_partie()['murs']['verticaux']) != len(etat['murs']['verticaux']):
+                    elif  (len(game.état_partie()['murs']['verticaux']) !=
+                        len(etat['murs']['verticaux'])):
                         vwallpos = tuple(etat['murs']['verticaux'][-1])
                         game.placer_mur(2, vwallpos, 'vertical')
                         game.afficher()
@@ -156,17 +168,20 @@ if __name__ == "__main__":
                     game.afficher()
                     etat = jouer_coup(game_info[0], 'MV', (col, row))[1]
                     # Type coup robot | Deplacement
-                    if game.état_partie()['joueurs'][1]['pos'] != tuple(etat['joueurs'][1]['pos']):
+                    if (game.état_partie()['joueurs'][1]['pos'] !=
+                        tuple(etat['joueurs'][1]['pos'])):
                         newpos = tuple(etat['joueurs'][1]['pos'])
                         game.déplacer_jeton(2, newpos)
                         game.afficher()
                     # Type coup robot | Mur horizontal
-                    elif  len(game.état_partie()['murs']['horizontaux']) != len(etat['murs']['horizontaux']):
+                    elif  (len(game.état_partie()['murs']['horizontaux']) !=
+                        len(etat['murs']['horizontaux'])):
                         hwallpos = tuple(etat['murs']['horizontaux'][-1])
                         game.placer_mur(2, hwallpos, 'horizontal')
                         game.afficher()
                     # Type coup robot | Mur vertical
-                    elif  len(game.état_partie()['murs']['verticaux']) != len(etat['murs']['verticaux']):
+                    elif  (len(game.état_partie()['murs']['verticaux']) !=
+                        len(etat['murs']['verticaux'])):
                         vwallpos = tuple(etat['murs']['verticaux'][-1])
                         game.placer_mur(2, vwallpos, 'vertical')
                         game.afficher()
@@ -200,7 +215,8 @@ if __name__ == "__main__":
                     etat = jouer_coup(game_info[0], 'D', (col, row))[1]
                     print(etat)
                     # Type coup robot | Deplacement
-                    if game.état_partie()['joueurs'][1]['pos'] != tuple(etat['joueurs'][1]['pos']):
+                    if (game.état_partie()['joueurs'][1]['pos'] !=
+                        tuple(etat['joueurs'][1]['pos'])):
                         print(game.état_partie()['joueurs'][1]['pos'])
                         print(etat['joueurs'][1]['pos'])
                         newpos = tuple(etat['joueurs'][1]['pos'])
@@ -208,12 +224,14 @@ if __name__ == "__main__":
                         game.déplacer_jeton(2, newpos)
                         print(game.état_partie())
                     # Type coup robot | Mur horizontal
-                    elif  len(game.état_partie()['murs']['horizontaux']) != len(etat['murs']['horizontaux']):
+                    elif  (len(game.état_partie()['murs']['horizontaux']) !=
+                        len(etat['murs']['horizontaux'])):
                         wallpos = tuple(etat['murs']['horizontaux'][-1])
                         print(f'Robot placed horizontal wall at: {wallpos}')
                         game.placer_mur(2, wallpos, 'horizontal')
                     # Type coup robot | Mur vertical
-                    elif  len(game.état_partie()['murs']['verticaux']) != len(etat['murs']['verticaux']):
+                    elif  (len(game.état_partie()['murs']['verticaux']) !=
+                        len(etat['murs']['verticaux'])):
                         wallpos = tuple(etat['murs']['verticaux'][-1])
                         print(f'Robot placed horizontal wall at: {wallpos}')
                         game.placer_mur(2, wallpos, 'vertical')
@@ -231,18 +249,21 @@ if __name__ == "__main__":
                     etat = jouer_coup(game_info[0], 'MH', (col, row))[1]
                     print(etat)
                     # Type coup robot | Deplacement
-                    if game.état_partie()['joueurs'][1]['pos'] != tuple(etat['joueurs'][1]['pos']):
+                    if (game.état_partie()['joueurs'][1]['pos'] !=
+                        tuple(etat['joueurs'][1]['pos'])):
                         newpos = tuple(etat['joueurs'][1]['pos'])
                         print(f'Robot moved to new position: {newpos}')
                         game.déplacer_jeton(2, newpos)
                         print(game.état_partie())
                     # Type coup robot | Mur horizontal
-                    elif  len(game.état_partie()['murs']['horizontaux']) != len(etat['murs']['horizontaux']):
+                    elif  (len(game.état_partie()['murs']['horizontaux']) !=
+                        len(etat['murs']['horizontaux'])):
                         wallpos = tuple(etat['murs']['horizontaux'][-1])
                         print(f'Robot placed horizontal wall at: {wallpos}')
                         game.placer_mur(2, wallpos, 'horizontal')
                     # Type coup robot | Mur vertical
-                    elif  len(game.état_partie()['murs']['verticaux']) != len(etat['murs']['verticaux']):
+                    elif  (len(game.état_partie()['murs']['verticaux']) !=
+                        len(etat['murs']['verticaux'])):
                         wallpos = tuple(etat['murs']['verticaux'][-1])
                         print(f'Robot placed horizontal wall at: {wallpos}')
                         game.placer_mur(2, wallpos, 'vertical')
@@ -260,17 +281,20 @@ if __name__ == "__main__":
                     etat = jouer_coup(game_info[0], 'MV', (col, row))[1]
                     print(etat)
                     # Type coup robot | Deplacement
-                    if game.état_partie()['joueurs'][1]['pos'] != tuple(etat['joueurs'][1]['pos']):
+                    if (game.état_partie()['joueurs'][1]['pos'] !=
+                        tuple(etat['joueurs'][1]['pos'])):
                         newpos = tuple(etat['joueurs'][1]['pos'])
                         print(f'Robot moved to new position: {newpos}')
                         game.déplacer_jeton(2, newpos)
                     # Type coup robot | Mur horizontal
-                    elif  len(game.état_partie()['murs']['horizontaux']) != len(etat['murs']['horizontaux']):
+                    elif  (len(game.état_partie()['murs']['horizontaux']) !=
+                        len(etat['murs']['horizontaux'])):
                         wallpos = tuple(etat['murs']['horizontaux'][-1])
                         print(f'Robot placed horizontal wall at: {wallpos}')
                         game.placer_mur(2, wallpos, 'horizontal')
                     # Type coup robot | Mur vertical
-                    elif  len(game.état_partie()['murs']['verticaux']) != len(etat['murs']['verticaux']):
+                    elif  (len(game.état_partie()['murs']['verticaux']) !=
+                        len(etat['murs']['verticaux'])):
                         wallpos = tuple(etat['murs']['verticaux'][-1])
                         print(f'Robot placed horizontal wall at: {wallpos}')
                         game.placer_mur(2, wallpos, 'vertical')

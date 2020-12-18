@@ -53,19 +53,16 @@ class QuoridorX(Quoridor):
             grid.forward(side_length)
             grid.right(90)
         grid.hideturtle()
-
         self.p1 = turtle.Turtle()
         self.p1.speed(0)
         self.p1.shape('circle')
         self.p1.color('blue')
         self.p1.hideturtle()
-        
         self.p2 = turtle.Turtle()
         self.p2.speed(0)
         self.p2.shape('circle')
         self.p2.color('red')
         self.p2.hideturtle()
-
         self.hwall = turtle.Turtle()
         self.hwall.speed(0)
         self.hwall.shape('square')
@@ -102,9 +99,6 @@ class QuoridorX(Quoridor):
             self.number.penup()
             self.number.forward(30)
         self.number.hideturtle()
-        
-
-
         self.afficher()
 
 
@@ -118,7 +112,6 @@ class QuoridorX(Quoridor):
         self.win.tracer(True)
         self.p1.showturtle()
         self.win.tracer(False)
-        
         # Positioning player 2
         self.p2.penup()
         self.p2.setx((self.etat['joueurs'][1]['pos'][0] - 5) * 30)
@@ -127,7 +120,6 @@ class QuoridorX(Quoridor):
         self.win.tracer(True)
         self.p2.showturtle()
         self.win.tracer(False)
-
         # Horizontal walls
         for hwall in self.etat['murs']['horizontaux']:
             # Positioning the turtle at starting coordonates
@@ -142,7 +134,6 @@ class QuoridorX(Quoridor):
             self.hwall.forward(60)
             self.hwall.penup()
             self.hwall.goto(-135, -135)
-
         # Vertical walls
         for vwall in self.etat['murs']['verticaux']:
             # Positioning the turtle at starting coordonates
@@ -157,7 +148,6 @@ class QuoridorX(Quoridor):
             self.vwall.penup()
             self.vwall.goto(-135, -135)
             self.vwall.right(90)
-
         # Legend information
         pen = turtle.Turtle()
         pen.clear()
@@ -167,7 +157,6 @@ class QuoridorX(Quoridor):
         pen.penup()
         pen.hideturtle()
         pen.goto(-(30*9/2), (30*9/2) + 15)
-
         j1 = [self.etat['joueurs'][0]['nom'], self.etat['joueurs'][0]['murs']]
         j2 = [self.etat['joueurs'][1]['nom'], self.etat['joueurs'][1]['murs']]
         if len(j1[0]) >= len(j2[0]):

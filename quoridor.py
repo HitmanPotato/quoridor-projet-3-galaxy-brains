@@ -206,7 +206,7 @@ class Quoridor:
         # -Exception- | Invalid move
         if position not in list(graphe.successors(self.etat['joueurs'][joueur - 1]['pos'])):
             raise QuoridorError("La position est invalide pour l'état actuel du jeu.")
-        self.etat['joueurs'][joueur - 1]['pos'] = position
+        self.etat['joueurs'][joueur - 1]['pos'] = tuple(position)
 
     def état_partie(self):
         '''Produire l'état actuel de la partie.(Dict)'''
@@ -370,7 +370,7 @@ class Quoridor:
             if (((position[0] + 1, position[1] - 1) in self.etat['murs']['verticaux']) or
                 ([position[0] + 1, position[1] - 1] in self.etat['murs']['verticaux'])):
                 raise QuoridorError('La position est invalide pour cette orientation.')
-            horizontal_walls.append(position)
+            horizontal_walls.append(tuple(position))
 
         vertical_walls = self.etat['murs']['verticaux']
         if orientation == 'vertical':
@@ -391,22 +391,13 @@ class Quoridor:
             if (((position[0] - 1, position[1] + 1) in self.etat['murs']['horizontaux']) or
                 ([position[0] - 1, position[1] + 1] in self.etat['murs']['horizontaux'])):
                 raise QuoridorError('La position est invalide pour cette orientation.')
-            vertical_walls.append(position)
+            vertical_walls.append(tuple(position))
+
         graphe = construire_graphe(
             [j['pos'] for j in self.etat['joueurs']],
             horizontal_walls,
             vertical_walls)
         # -Exception- | Wall would block player paths
-        if (not nx.has_path(graphe, self.etat['joueurs'][0]['pos'], 'B1')
-            or not nx.has_path(graphe, self.etat['joueurs'][1]['pos'], 'B2')):
-            raise QuoridorError("La position d'un mur est invalide.")
-        # Remove 1 player wall, add new wall to 'murs'
-        self.etat['joueurs'][joueur - 1]['murs'] -= 1
-
-
-        graphe = construire_graphe(
-            [j['pos'] for j in self.etat['joueurs']],
-            horizontal_walls, vertical_walls)
         if (not nx.has_path(graphe, self.etat['joueurs'][0]['pos'], 'B1')
             or not nx.has_path(graphe, self.etat['joueurs'][1]['pos'], 'B2')):
             raise QuoridorError("La position d'un mur est invalide.")

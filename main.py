@@ -79,26 +79,6 @@ if __name__ == "__main__":
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     elif parsed.graphique:
         # Mode manuel graphique
         game = QuoridorX(game_info[1]['joueurs'])
@@ -196,26 +176,6 @@ if __name__ == "__main__":
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     else:
         # Mode manuel simple [complete]
         game = Quoridor(game_info[1]['joueurs'])
@@ -226,8 +186,6 @@ if __name__ == "__main__":
             type_coup = input("Choisissez votre type de coup (D, MH ou MV) : ")
             col = input('Définissez la colonne de votre coup : ')
             row = input('Définissez la ligne de votre coup : ')
-
-
             # Type coup joueur | Deplacement
             if type_coup.upper() == 'D':
                 try:

@@ -213,100 +213,17 @@ class Quoridor:
         return self.etat
 
     def jouer_coup(self, joueur):
-        """Jouer un coup automatique pour un joueur.
-        Pour le joueur spécifié, jouer automatiquement son meilleur coup pour l'état actuel
-        de la partie. Ce coup est soit le déplacement de son jeton, soit le placement d'un
-        mur horizontal ou vertical.
-        Args:
-            joueur (int): Un entier spécifiant le numéro du joueur (1 ou 2).
-        Raises:
-            QuoridorError: Le numéro du joueur est autre que 1 ou 2.
-            QuoridorError: La partie est déjà terminée.
-        Returns:
-            Tuple[str, Tuple[int, int]]: Un tuple composé du type et de la position du coup joué.
-
-        # If player already has shortest path, move forward
-        if len(playerpath) <= len(advpath):
-            self.déplacer_jeton(player[0], playerpath[1])
-            type_coup = 'D'
-            coup = (player[0], playerpath[1])
-        # If adversary has shortest path, try to block with wall
-        # If adv moving south, block with horizontal wall
-        # If can't place wall after 2 tries, move player
-        elif advpos[1] - advpath[1][1] == 1:
-            try:
-                self.placer_mur(player[0], (advpos[0], advpos[1] + 1), 'horizontal')
-                type_coup = 'MH'
-                coup = (advpos[0], advpos[1] + 1)
-            except QuoridorError:
-                try:
-                    self.placer_mur(player[0], (advpos[0] - 1, advpos[1] + 1), 'horizontal')
-                    type_coup = 'MH'
-                    coup = (advpos[0] - 1, advpos[1] + 1)
-                except QuoridorError:
-                    self.déplacer_jeton(player[0], playerpath[1])
-                    type_coup = 'D'
-                    coup = (player[0], playerpath[1])
-        # If adv moving north, block with horizontal wall
-        elif advpos[1] - advpath[1][1] == -1:
-            try:
-                self.placer_mur(player[0], (advpos[0], advpos[1]), 'horizontal')
-                type_coup = 'MH'
-                coup = (advpos[0], advpos[1])
-            except QuoridorError:
-                try:
-                    self.placer_mur(player[0], (advpos[0] - 1, advpos[1]), 'horizontal')
-                    type_coup = 'MH'
-                    coup = (advpos[0] - 1, advpos[1])
-                except QuoridorError:
-                    self.déplacer_jeton(player[0], playerpath[1])
-                    type_coup = 'D'
-                    coup = (player[0], playerpath[1])
-        # If adv moving left, block with vertical wall
-        elif advpos[0] - advpath[1][0] == 1:
-            try:
-                self.placer_mur(player[0], (advpos[0], advpos[1] - 1), 'vertical')
-                type_coup = 'MV'
-                coup = (advpos[0], advpos[1] - 1)
-            except QuoridorError:
-                try:
-                    self.placer_mur(player[0], (advpos[0], advpos[1]), 'vertical')
-                    type_coup = 'MV'
-                    coup = (advpos[0], advpos[1])
-                except QuoridorError:
-                    self.déplacer_jeton(player[0], playerpath[1])
-                    type_coup = 'D'
-                    coup = (player[0], playerpath[1])
-        # If adv moving right, block with vertical wall
-        elif advpos[0] - advpath[1][0] == -1:
-            try:
-                self.placer_mur(player[0], (advpos[0] + 1, advpos[1] - 1), 'vertical')
-                type_coup = 'MV'
-                coup = (advpos[0] + 1, advpos[1] - 1)
-            except QuoridorError:
-                try:
-                    self.placer_mur(player[0], (advpos[0] + 1, advpos[1]), 'vertical')
-                    type_coup = 'MV'
-                    coup = (advpos[0] + 1, advpos[1])
-                except QuoridorError:
-                    self.déplacer_jeton(player[0], playerpath[1])
-                    type_coup = 'D'
-                    coup = (player[0], playerpath[1])
-        return (type_coup, coup)
-        )
-        advpath = nx.shortest_path(graphe, self.etat['joueurs'][adv[0] - 1]['pos'], adv[1])
-        advpos = self.etat['joueurs'][adv[0] - 1]['pos']
-        """
+        """Jouer un coup automatique pour un joueur."""
         # -Exceptions-
         if self.partie_terminée():
             raise QuoridorError('La partie est déjà terminée.')
 
         if joueur == 1:
             player = (1, 'B1')
-            # adv = (2, 'B2')
+            adv = (2, 'B2')
         elif joueur == 2:
             player = (2, 'B2')
-            # adv = (1, 'B1')
+            adv = (1, 'B1')
         else:
             raise QuoridorError('Le numéro du joueur est autre que 1 ou 2.')
 
@@ -316,8 +233,29 @@ class Quoridor:
             self.etat['murs']['verticaux'])
 
         playerpath = nx.shortest_path(graphe, self.etat['joueurs'][player[0] - 1]['pos'], player[1])
-        self.déplacer_jeton(player[0], playerpath[1])
-        return ['D', playerpath[1]]
+        advpath = nx.shortest_path(graphe, self.etat['joueurs'][adv[0] - 1]['pos'], adv[1])
+        if len(playerpath) <= len(advpath):
+            self.déplacer_jeton(player[0], playerpath[1])
+            return ['D', playerpath[1]]
+        else:
+            try:
+                self.placer_mur(1, advpath[1], 'horizontal')
+                return ['MH', advpath[1]]
+            except Exception:
+                try:
+                    self.placer_mur(1, advpath[1], 'vertical')
+                    return ['MV', advpath[1]]
+                except Exception:
+                    try:
+                        self.placer_mur(1, advpath[1] - 1, 'horizontal')
+                        return ['MH', advpath[1] - 1]
+                    except Exception:
+                        try:
+                            self.placer_mur(1, advpath[1] - 1, 'vertical')
+                            return ['MV', advpath[1] - 1]
+                        except Exception:
+                            self.déplacer_jeton(player[0], playerpath[1])
+                            return ['D', playerpath[1]]
 
     def partie_terminée(self):
         """Déterminer si la partie est terminée.
@@ -352,6 +290,7 @@ class Quoridor:
             raise QuoridorError('Le joueur a déjà placé tous ses murs.')
 
         horizontal_walls = self.etat['murs']['horizontaux']
+        vertical_walls = self.etat['murs']['verticaux']
         if orientation == 'horizontal':
             # -Exception- | Position outside grid | horizontal
             if not (1 <= position[0] <= 8 and 2 <= position[1] <= 9):
@@ -371,8 +310,23 @@ class Quoridor:
                 ([position[0] + 1, position[1] - 1] in self.etat['murs']['verticaux'])):
                 raise QuoridorError('La position est invalide pour cette orientation.')
             horizontal_walls.append(tuple(position))
-
-        vertical_walls = self.etat['murs']['verticaux']
+            graphe = construire_graphe(
+                [j['pos'] for j in self.etat['joueurs']],
+                horizontal_walls,
+                vertical_walls)
+            if not nx.has_path(graphe, self.etat['joueurs'][0]['pos'], 'B1'):
+                horizontal_walls.pop()
+                raise QuoridorError("La position d'un mur est invalide.")
+            if not nx.has_path(graphe, self.etat['joueurs'][0]['pos'], 'B2'):
+                horizontal_walls.pop()
+                raise QuoridorError("La position d'un mur est invalide.")
+            if not nx.has_path(graphe, self.etat['joueurs'][1]['pos'], 'B2'):
+                horizontal_walls.pop()
+                raise QuoridorError("La position d'un mur est invalide.")
+            if not nx.has_path(graphe, self.etat['joueurs'][1]['pos'], 'B1'):
+                horizontal_walls.pop()
+                raise QuoridorError("La position d'un mur est invalide.")
+        
         if orientation == 'vertical':
             # -Exception- | Position outside grid | vertical
             if not (2 <= position[0] <=9 and 1 <= position[1] <= 8):
@@ -392,14 +346,21 @@ class Quoridor:
                 ([position[0] - 1, position[1] + 1] in self.etat['murs']['horizontaux'])):
                 raise QuoridorError('La position est invalide pour cette orientation.')
             vertical_walls.append(tuple(position))
+            graphe = construire_graphe(
+                [j['pos'] for j in self.etat['joueurs']],
+                horizontal_walls,
+                vertical_walls)
+            if not nx.has_path(graphe, self.etat['joueurs'][0]['pos'], 'B1'):
+                vertical_walls.pop()
+                raise QuoridorError("La position d'un mur est invalide.")
+            if not nx.has_path(graphe, self.etat['joueurs'][0]['pos'], 'B2'):
+                vertical_walls.pop()
+                raise QuoridorError("La position d'un mur est invalide.")
+            if not nx.has_path(graphe, self.etat['joueurs'][1]['pos'], 'B2'):
+                vertical_walls.pop()
+                raise QuoridorError("La position d'un mur est invalide.")
+            if not nx.has_path(graphe, self.etat['joueurs'][1]['pos'], 'B1'):
+                vertical_walls.pop()
+                raise QuoridorError("La position d'un mur est invalide.")
 
-        graphe = construire_graphe(
-            [j['pos'] for j in self.etat['joueurs']],
-            horizontal_walls,
-            vertical_walls)
-        # -Exception- | Wall would block player paths
-        if (not nx.has_path(graphe, self.etat['joueurs'][0]['pos'], 'B1')
-            or not nx.has_path(graphe, self.etat['joueurs'][1]['pos'], 'B2')):
-            raise QuoridorError("La position d'un mur est invalide.")
-        # Remove 1 player wall, add new wall to 'murs'
         self.etat['joueurs'][joueur - 1]['murs'] -= 1
